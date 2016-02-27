@@ -1,5 +1,5 @@
 indexfile: index.yaml
-title: "No place like $HOME"
+title: The One True Blog
 sourcedir: [., templates]
 datadir: .
 filesdir: [files, yahoo]

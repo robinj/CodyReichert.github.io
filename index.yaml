@@ -1,31 +1,22 @@
-- url: index.html # build page index.html
-  title: Home # Give it title: Home
-  template: index.st # Use index.st at the template
-  requires: blog.st # events.st as the sub-template
+
+- url: index.html
+  title: Home
+  template: index.st
+  requires: blog.st
   data:
-    blogroll: FROM blogs.yaml ORDER BY date DESC
+    recentblogs: FROM blogs.yaml  ORDER BY date DESC LIMIT 10
 
-- url: events.html
-  title: Events
-  template: events.st
-  requires: [event.st, eventgroup.st, date.st]
+- url: archive.html
+  title: Archive
+  template: archive.st
+  requires: blog.st
   data:
-    eventsbydate: FROM events.yaml ORDER BY date DESC GROUP BY date
+    blogs: FROM blogs.yaml ORDER BY date DESC
 
-- url: april_events.tex
-  title: April Events
-  template: april_events.st
-  requires: event.st
-  data:
-    april: FROM events.yaml WHERE date>='2009-04-01' AND date < '2009-05-01' ORDER BY date
-  layout: layout.tex.st
-  inmenu: no
+- url: about.html
+  title: About
+  template: about.st
 
-- Rooms:
-  - url: room101.html
-    title: Room 101
-    source: room101.txt
-
-  - url: room203.html
-    title: Room 203
-    source: room203.txt
+- url: contact.html
+  title: Contact
+  template: contact.st

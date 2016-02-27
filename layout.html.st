@@ -23,9 +23,15 @@
     <link rel="stylesheet" type="text/css" media="print" href="$root$css/print.css" />
   </head>
   <body>
-    <div class="container-fluid">
+    <div class="container">
       <header>
-        <h1>$sitetitle$</h1>
+        <h2>
+          $sitetitle$
+          <small>
+            <br/>
+            Emacs, programming, and Arch Linux
+          </small>
+        </h2>
       </header>
       <div class="row">
         <nav id="navbar" class="navbar nav navbar-default col-md-2">
