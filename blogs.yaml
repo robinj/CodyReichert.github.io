@@ -1,11 +1,29 @@
 - date: 2014-12-28
   author: Cody Reichert
   title: "Add Template Options to a WordPress Custom Post Type"
+  file: blogs/add-template-options-to-wordpress-custom-post-type.html
 
 - date: 2015-07-04
   author: Cody Reichert
   title: "Webpack: Create Multiple Bundles Using Entry Points"
+  file: blogs/webpack-create-multiple-bundles-using-entry-points.html
 
 - date: 2015-07-05
   author: Cody Reichert
-  title: "Bloggin with Emacs and Org Mode"
+  title: "Blogging with Emacs and Org Mode"
+  file: blogs/blogging-with-emacs-and-org-mode.html
+
+- date: 2015-07-07
+  author: Cody Reichert
+  title: "Managing Your Dotfiles with GNU Stow"
+  file: blogs/managing-your-dotfiles-with-gnu-stow.html
+
+- date: 2015-08-02
+  author: Cody Reichert
+  title: "cl-ses: Sending Emails from Common Lisp with AWS SES"
+  file: blogs/cl-ses-sending-emails-from-common-lisp-aws-ses.html
+
+- date: 2016-02-22
+  author: Cody Reichert
+  title: "January 2016 Reading List"
+  file: blogs/january-2016-reading-list.html

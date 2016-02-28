@@ -20,3 +20,35 @@
 - url: contact.html
   title: Contact
   template: contact.st
+
+# We have to create the permalinks for our blog posts. These are not
+# displayed in the sidebar, but can be linked to from anywhere.
+- url: blogs/add-template-options-to-wordpress-custom-post-type.html
+  title: Add Template Options to a WordPress Custom Post Type
+  source: blogs/add-template-options-to-wordpress-custom-post-type.st
+  inmenu: no
+
+- url: blogs/webpack-create-multiple-bundles-using-entry-points.html
+  title: "Webpack: Create Multiple Bundles Using Entry Points"
+  source: blogs/webpack-create-multiple-bundles-using-entry-points.st
+  inmenu: no
+
+- url: blogs/blogging-with-emacs-and-org-mode.html
+  title: Bloggin with Emacs and Org-Mode
+  source: blogs/blogging-with-emacs-and-org-mode.st
+  inmenu: no
+
+- url: blogs/managing-your-dotfiles-with-gnu-stow.html
+  title: Managing Your Dotfiles with GNU Stow
+  source: blogs/managing-your-dotfiles-with-gnu-stow.st
+  inmenu: no
+
+- url: blogs/cl-ses-sending-emails-from-common-lisp-aws-ses.html
+  title: "cl-ses: Sending Emails with Common Lisp and AWS SES"
+  source: blogs/cl-ses-sending-emails-from-common-lisp-aws-ses.st
+  inmenu: no
+
+- url: blogs/january-2016-reading-list.html
+  title: January 2016 Reading List
+  source: blogs/january-2016-reading-list.st
+  inmenu: no

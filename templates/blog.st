@@ -1,2 +1,2 @@
-- $it.title$ - <i><small>$it.date:date()$</small></i>
+- <span>[$it.title$]($it.file$) - <i><small>$it.date$</small></i>
 
