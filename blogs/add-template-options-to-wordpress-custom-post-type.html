@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>The One True Blog - Add Template Options to a WordPress Custom Post Type</title>
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="../css/screen.css">
+    <link rel="stylesheet" type="text/css" media="print"
+          href="../css/print.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"
+            type="text/javascript"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="js/nav.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" />
+    <link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h2>
+          The One True Blog
+          <small>
+            <br/>
+            Emacs, programming, and Arch Linux
+          </small>
+        </h2>
+      </header>
+      <div class="row">
+        <nav id="navbar" class="navbar nav navbar-default col-md-2">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle"
+                    data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul class="nav tree"><li><a href="../index.html">Home</a></li><li><a href="../archive.html">Archive</a></li><li><a href="../about.html">About</a></li><li><a href="../contact.html">Contact</a></li></ul>
+          </div>
+        </nav>
+        <main role="main" class="col-md-10">
+          <h1 id="adding-template-options-to-a-wordpress-custom-post-type">Adding Template Options to a Wordpress Custom Post Type</h1>
+<h2 id="about-the-task">About the Task</h2>
+<p>I’ve recently been working on a Wordpress plugin for a new service we’ll be releasing at Reichert Brothers in the next couple of months. Although I haven’t ever done too much in Wordpress, it allows for some really cool things and lends itself well to rapid development. I ran into a couple of problems when developing out the plugin that I think might be valuable enough to get documented and help anyone else out that may come across the same issues.</p>
+<h3 id="background">Background</h3>
+<p>For the sake of making this easier to understand, I’ll give a little background on what I needed my plugin to accomplish. In a nutshell, I ventured to write a ‘simple’ plugin that would retrieve JSON from an external API, format it, and display it on a Custom Post Type Page I created. I wanted to write as few of my own custom templates as possible and inherit the templates that the active theme makes available. The following things needed to be achieved:</p>
+<ul>
+<li><em>Create a Custom Post Type</em>: to display the data from an API on our custom pages. (not covered here)</li>
+<li><em>Add meta boxes</em>: to filter the requests to our third part API (not covered here)</li>
+<li><em>Allow the user to pick a template</em>: for their Custom Post Type Pages. These templates should not be hardcoded and should be the same templates that the active theme offers (full-width, left-sidebar, etc).</li>
+</ul>
+<p>We’ll be covering the third bullet - allowing the admin to pick a different template for each of our Custom Post Type pages.</p>
+<h3 id="the-problem">The Problem</h3>
+<p>When creating a new custom post type, Wordpress does allow for authors to add the <code>page-attributes</code> capabilities to their posts. But they don’t include the Template dropdown (see fig 1.1). As a matter of fact, they explicity hardcode it to only be allowed on <code>page</code> post types. Well, I wanted my users to be able to pick a template offered by their active theme on a page-by-page basis.</p>
+<p><a href="**fig%201.1">./img/wp-page-attributes.png</a></p>
+<p>The most common solution I found was to register a setting for the admin where they could pick one template to take effect on all of those custom post type pages. But let’s say my custom post type is for restaraunt menus. Well, now the restaraunt needs two pages: one for their lunch menu and one for the dinner menu. The lunch menu is much smaller and thus doesn’t need a ‘full-width’ layout. But the dinner menu is large and the admin doesn’t want anything else on that page. Now do you see why we might need the ability to choose a template on a page-by-page basis. At least this was my though process.</p>
+<h2 id="diving-in">Diving In</h2>
+<p>Well in the end, I ended up figuring out what I think is a decent solution. I don’t think I ‘invented’ this solution, because I bet there a many other people out there doing the same thing, but let’s take a look.</p>
+<h3 id="tldr-solution">TL;DR Solution</h3>
+<p>We’ll leverage the use of Meta Boxes to provide our own dropdown menu. Then we’ll save that setting in our <code>post_meta</code>, retrieve that setting when our CPT pages are loaded, and show the correct template. Pretty simple!</p>
+<h3 id="registering-the-meta-box">Registering the Meta Box</h3>
+<p>First, we’ll start off by creating our meta box for our Custom Post Type. If you’ve never used meta boxes before, I recommend taking a look at the <a href="WP%20Codex%20Function%20Reference%20for%20=add_meta_box=">http://codex.wordpress.org/Function_Reference/add_meta_box</a>. It gives some great examples and provides plenty of info on how to set one up. Keep in mind all of this is from a plugin. I won’t go into setting all of that up in this blog, but that’s where we’ll be working from.</p>
+<p>Let’s set up our meta box! I’ll touch on the important methods and settings, but I’ll leave out explaining the irrelevant ones. Our code:</p>
+<pre class="php"><code>  function cptTemplateMetaBox() {
+    add_meta_box(
+      &#39;cpt-template-meta-box&#39;
+      , __( &#39;Page Template&#39;, &#39;my-cpt-textdomain&#39; )
+      , &#39;postTemplateMetaBoxMarkup&#39;
+      , &#39;my-cpt-name&#39;
+      , &#39;side&#39;
+      , &#39;core&#39;
+    );
+  }
+  add_action( &#39;add_meta_boxes&#39;, &#39;cptTemplateMetaBox&#39; );</code></pre>
+<p>Ok so we’ve successfully created our Meta Box (even if it’s not doing anything yet.) Let’s go through these the <code>add_meta_box</code> function and see what we’re setting up.</p>
+<ul>
+<li><em>cpt-template-meta-box</em>: is simply the html ID that wordpress will give our meta box when it’s put on the page.</li>
+<li>*__( ‘Page Template, ’cpt-textdomain’ )*: is the title that wordpress will give our meta box when it’s rendered.</li>
+<li><em>postTemplateMetaBoxMarkup</em>: is the name of the function we’re about to define that will render the markup to go inside of our meta box.</li>
+<li><em>my-cpt-name</em>: is the name of our custom post type for which to load our meta box.</li>
+<li><em>side</em>: is where our meta box will go. On the side, since that’s where the normal one would be.</li>
+<li><em>core</em>: This field is the ‘priority’ of the meta box.</li>
+<li><em>add_action</em>: registers the meta box.</li>
+</ul>
+<h3 id="rendering-the-meta-box">Rendering the Meta Box</h3>
+<p>Now that we have registered our Meta Box, it’s time to give it some markup. Basically, we’ll just generate one simple dropdown box that has a list of all the currently available templates. Since this part is a little more detailed than the previous code snippet, I commented inline what everything is doing. Here’s the code:</p>
+<pre class="php"><code>  function postTemplateMetaBoxMarkup( $post ) {
+      // create a nonce for verification (not covered in this post)
+      wp_nonce_field( basename(__FILE__), &#39;cpt_template_meta_nonce&#39; );
+
+      // we get the cpt_page_template meta field from the database when we load
+      // the admin panel. We haven&#39;t saved on yet, but when we do it&#39;ll be here.
+      $current_template = get_post_meta( $post-&gt;ID, &#39;cpt_page_template&#39;, true);
+      // the get_page_templates() function retrieves all of the currently enabled
+      // templates.
+      $template_options = get_page_templates();
+
+      // start creating our markup
+      // first we create a label, the &#39;for&#39; attribute should match the &#39;name&#39; of the &lt;input&gt; we
+      // want to save.
+      $box_label = &#39;&lt;label for=&quot;cpt_page_template&quot;&gt;Page Template&lt;/label&gt;&#39;;
+      // &lt;select&gt; wrapper around our options. notice the &#39;name&#39; == &#39;for&#39; from above
+      $box_select = &#39;&lt;select name=&quot;cpt_page_template&quot;&gt;&#39;;
+
+      // we give a Default option which will default to whatever the theme&#39;s default
+      // template is.
+      $box_default_option = &#39;&lt;option value=&quot;&quot;&gt;Default Template&lt;/option&gt;&#39;;
+      $box_options = &#39;&#39;;
+
+      // here&#39;s the meat. For EACH of the available templates, create an &lt;option&gt; for it,
+      // and put it in our &lt;select&gt; box.
+      foreach (  $template_options as $name=&gt;$file ) {
+          if ( $current_template == $file ) {
+              $box_options .= &#39;&lt;option value=&quot;&#39; . $file . &#39;&quot; selected=&quot;selected&quot;&gt;&#39; . $name . &#39;&lt;/option&gt;&#39;;
+          } else {
+              $box_options .= &#39;&lt;option value=&quot;&#39; . $file . &#39;&quot;&gt;&#39; . $name . &#39;&lt;/option&gt;&#39;;
+          }
+      }
+
+      // echo our markup (you should return it, but we won&#39;t do that here).
+      echo $box_label;
+      echo $box_select;
+      echo $box_default_option;
+      echo $box_options;
+      echo &#39;&lt;/select&gt;&#39;;
+  }</code></pre>
+<p>Note, we don’t have to register this function with any hooks or filters because it’s called directory from the =add_meta_box= function. Now we should have a fully rendered meta box on our Custom Post Type Pages. It’s not saving any settings yet, but now we can start persisting the selection. (See fig 1.2)</p>
+<p><a href="*fig%201.2*">./img/wp-page-template-meta-box.png</a></p>
+<h3 id="persisting-the-meta-box-data">Persisting the Meta Box Data</h3>
+<p>Wordpress makes saving the data from the Meta Box really simple. In our case, it’s going to see our select box and look for the =selected= option. Since this isn’t a meta box tutorial, I’ll leave out the details of how the saving works. All we need to know is that the field saved, and what the name of the saved field is. Here’s the code:</p>
+<pre class="php"><code>  function postTemplateMetaBoxSave( $post_id ) {
+      $current_nonce = $_POST[&#39;cpt_template_meta_nonce&#39;];
+      $is_autosaving = wp_is_post_autosave( $post_id );
+      $is_revision   = wp_is_post_revision( $post_id );
+      $valid_nonce   = ( isset( $current_nonce ) &amp;&amp; wp_verify_nonce( $current_nonce, basename( __FILE__ ) ) ) ? &#39;true&#39; : &#39;false&#39;;
+
+      // if the post is autosaving, a revision, or the nonce is not valid
+      // do not save any changed settings.
+      if ( $is_autosaving || $is_revision || !$valid_nonce ) {
+          return;
+      }
+
+      // Find our &#39;cpt_page_template&#39; field in the POST request, and save it
+      // when the post is updated. Note that the POST field matches the
+      // name of the select box in the markup.
+      $cpt_page_template = $_POST[&#39;cpt_page_template&#39;];
+      update_post_meta( $post_id, &#39;cpt_page_template&#39;, $cpt_page_template );
+  }
+  add_action( &#39;save_post&#39;, &#39;postTemplateMetaBoxSave&#39; );</code></pre>
+<p>Add the end we hook into <code>save_post</code> with <code>add_action</code>, and run this function when the post is saved. This saves a field called <code>cpt_page_templates</code> in our database for this specific post. We can access this field when the page is loaded.</p>
+<h3 id="retrieving-the-template-on-the-front-end">Retrieving the template on the front end</h3>
+<p>This is the fun part. Now we have a shiny new meta box on our admin post pages, and a field in the database for each post telling us what template to show. So let’s show it!</p>
+<p>Fortunately this part is also pretty straightforward, and only requires a single function. Again I commented this inline since it flows pretty linearly. Let’s take a look code:</p>
+<pre class="php"><code>  function loadMyCptPostTemplate() {
+      // get the queried object which contains the information we need to
+      // access our post meta data
+      $query_object = get_queried_object();
+      $page_template = get_post_meta( $query_object-&gt;ID, &#39;cpt_page_template&#39;, true );
+
+      // the name of our custom post type for which we&#39;ll load a template
+      $my_post_type = &#39;my-cpt-name&#39;;
+
+      // create an array of default templates
+      $default_templates    = array();
+      $default_templates[]  = &#39;single-{$object-&gt;post_type}-{$object-&gt;post_name}.php&#39;;
+      $default_templates[]  = &#39;single-{$object-&gt;post_type}.php&#39;;
+      $default_templates[]  = &#39;single.php&#39;;
+
+      // only apply our template to our CPT pages.
+      if ( $query_object-&gt;post_type == $my_post_type ) {
+          // if the page_template isn&#39;t empty, set it as the default_template
+          if ( !empty( $page_template ) ) {
+              echo &#39;need to load &#39; . $page_template;
+              $default_templates = $page_template;
+          }
+      }
+
+      // locate the template and return it
+      $new_template = locate_template( $default_templates, false );
+      return $new_template;
+  }
+  add_filter( &#39;single_template&#39;, &#39;loadMyCptPostTemplate&#39; );</code></pre>
+<p>The <code>add_filter()</code> function at the end is important. It allows to hook into the query and change the template to be displayed. In our case, we intercept the query, run a function to see which template we had saved, and load that instead. Also notice that we set a default template. So if the post had no saved option, or something went wrong when trying to find it, it won’t fail.</p>
+<h2 id="summary">Summary</h2>
+<p>So that’s about it. The new template should load with all of the regular post content in the body. The only problem I’ve noticed is that some themes won’t show the page’s content on more specialized templates (like a Contact Page template), but this is pretty much expected and it has always worked for the more commen Full Width, Left Sidebar, etc, templates. This code is a little out of context, but the general idea is there and easy to adapt to any plugin.</p>
+<p>:: Cody Reichert</p>
+        </main>
+      </div>
+      <footer>
+        powered by <a href="https://github.com/jgm/yst">yst</a>
+      </footer>
+    </div>
+  </body>
+</html>
