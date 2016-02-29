@@ -49,8 +49,66 @@
           </div>
         </nav>
         <main role="main" class="col-md-10">
-          <h1 id="it.pagetitle"><span class="math inline"><em>i</em><em>t</em>.<em>p</em><em>a</em><em>g</em><em>e</em><em>t</em><em>i</em><em>t</em><em>l</em><em>e</em></span></h1>
-<p>There’s some content here.</p>
+          <h1 id="bloggin-with-emacs-and-org-mode">Bloggin with Emacs and Org-Mode</h1>
+<p>I’ve finally got my new blog up! I’ve been wanting to migrate from Middleman, a static-site generator written in Ruby. The problem was that it was too many steps to post a new article - so I just never did.</p>
+<p>I’ve been eyeing <a href="http://orgmode.org/worg/org-blog-wiki.html">a few solutions for blogging completely from within Emacs</a>. There’s some good (and some outdated) software on the wiki to accomplish that.</p>
+<p>I finally came across <a href="https://github.com/kelvinh/org-page">org-page</a>, which seemed to be exactly what I wanted. The documentation was a little terse, but it’s a simple setup so I decided to give it a shot.</p>
+<p>Here’s what I was able to get set up, with a few snippets to accompany the <a href="https://github.com/kelvinh/org-page/wiki/Quick-Guide-to-Org-page">official documentation</a>.</p>
+<ul>
+<li>Write blogs completely in <code>org-mode</code> (obviously)</li>
+<li>Publish to GitHub pages (or anywhere you can push static files).</li>
+<li>One command publish</li>
+<li>Ability to customize a theme, or write my own</li>
+<li>Tags, RSS Feed, and all the other blog goodies.</li>
+<li>Never have to leave Emacs</li>
+</ul>
+<h1 id="installation">Installation</h1>
+<p>Org-page is <a href="http://melpa.org/#/org-page">available on MELPA</a>, so the install is simple:</p>
+<pre class="sh"><code>  M-x package-install RET org-page RET</code></pre>
+<p>That will give you org-page and a few commands (which is all you need) to create a repo, add a new post, and publish.</p>
+<p><em>For manual installation, see the <a href="https://github.com/kelvinh/org-page/wiki/Quick-Guide-to-Org-page">documentation</a></em></p>
+<h1 id="set-up-a-repo">Set up a repo</h1>
+<p>Org-page also handles this for you, with the available command <code>op/new-repository</code>. So find a place on your system you want</p>
+<pre class="emacs-lisp"><code>M-x op/new-repository RET /path/to/new/blog RET</code></pre>
+<p>This sets up a new git repository, with a few pages already laid out for you (index.org, about.org, readme, etc).</p>
+<h1 id="org-page-in-your-init.el">Org-page in your init.el</h1>
+<p>There are few things you’ll need to set up in your Emacs config file to get things working correctly. Here’s an annotated example:</p>
+<pre class="lisp"><code>  (require &#39;org-page)
+  (setq op/repository-directory &quot;~/workspace/play/newblog&quot;)
+  (setq op/site-domain &quot;http://codyreichert.github.io&quot;)
+  (setq op/personal-github-link &quot;https://github.com/CodyReichert&quot;)
+  (setq op/site-main-title &quot;The One True Blog&quot;)
+  (setq op/site-sub-title &quot;Emacs, Programming, and Arch Linux&quot;)
+  (setq op/personal-disqus-shortname &quot;theonetrueblog&quot;)</code></pre>
+<p>Kelvin used very sane variable names, so most of that should be self-explanatory. Not all of those are required, but if you leave out things like the GitHub Link, it just won’t show at all - perfect.</p>
+<p><em>Reload your Emacs config and let’s move on</em></p>
+<h1 id="creating-a-new-post">Creating a new post</h1>
+<p>You’ll probably first want to fill out some of the generated pages, like <code>about.org</code> and <code>index.org</code>.</p>
+<blockquote>
+<p>Pro-tip: If you remove the =index.org= it will default to a list of posts, like mine. It’s preferable since there is already an about page.</p>
+</blockquote>
+<p>Once again, org-page has another built in command to get a new post started. The best thing about it is that is handles the description, file name, post uri, tags, and more. Meaning you can get to just writing articles, not boilerplate.</p>
+<pre class="sh"><code>M-x op/new-post RET</code></pre>
+<p>It will run you through a few steps to generate all of those fields for you post, and put your cursor where you can start writing. <a href="../img/op-new-post.gif">op/new-post gif example</a></p>
+<h1 id="publishing-your-new-blog">Publishing your new blog</h1>
+<p>Yet again…built in to org-page. And since we’re in Emacs, we can make it do whatever we want. First, make sure you set the remote in your blogs git repo:</p>
+<pre class="sh"><code>    git remote add origin git@github.com:CodyReichert/CodyReichert.github.io
+    git remote -v</code></pre>
+<p>Org-page has a command <code>op/do-publication</code>. It asks a couple of questions, and compiles the org mode pages for you. When you set up your repository, org-page created two branches: source and master. This is a good setup for GitHub-pages and probably most other hosts. All of your org files live on the source branch, and org-page will add and commit the compiled files to the mater branch.</p>
+<p><em>The questions:</em></p>
+<ol type="1">
+<li>Publish all org-files (y or n)</li>
+<li>Publish to directory? (original repo if not) (y or n) This on is particularly useful for sending the compiled files to another directory, which you can watch with a simple HTTP server and quickly view changes when your writing.</li>
+<li>Auto-commit to repo? (y or n)</li>
+<li>Auto-push to repo? (y or n)</li>
+</ol>
+<p>The last two are great, because all I need to do run <code>op/do-publication</code> and the new post is live within a few seconds. <em>That’s</em> the Emacs way.</p>
+<p><a href="../img/op-do-publication.gif">Here’s a GIF</a> of how I published this blog, right after I wrote this part.</p>
+<h1 id="other-setup">Other setup</h1>
+<p>I have a few other snippets for using a custom theme with org-page, and a couple other nice settings I’ll share eventually.</p>
+<p>My recommendation is to <code>C-h f RET ___ RET</code> on some of the org-page functions, they’re documented well.</p>
+<p>You can also view my org-page setup <a href="https://github.com/CodyReichert/dotfiles">on Github</a>.</p>
+<p>:: Cody Reichert</p>
         </main>
       </div>
       <footer>

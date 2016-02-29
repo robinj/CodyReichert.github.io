@@ -62,7 +62,11 @@
 <p>We’ll be covering the third bullet - allowing the admin to pick a different template for each of our Custom Post Type pages.</p>
 <h3 id="the-problem">The Problem</h3>
 <p>When creating a new custom post type, Wordpress does allow for authors to add the <code>page-attributes</code> capabilities to their posts. But they don’t include the Template dropdown (see fig 1.1). As a matter of fact, they explicity hardcode it to only be allowed on <code>page</code> post types. Well, I wanted my users to be able to pick a template offered by their active theme on a page-by-page basis.</p>
-<p><a href="**fig%201.1">./img/wp-page-attributes.png</a></p>
+<div style="text-align:center">
+<figure>
+<img src="../img/wp-page-attributes.png" alt="fig 1.1" /><figcaption><em>fig 1.1</em></figcaption>
+</figure>
+</div>
 <p>The most common solution I found was to register a setting for the admin where they could pick one template to take effect on all of those custom post type pages. But let’s say my custom post type is for restaraunt menus. Well, now the restaraunt needs two pages: one for their lunch menu and one for the dinner menu. The lunch menu is much smaller and thus doesn’t need a ‘full-width’ layout. But the dinner menu is large and the admin doesn’t want anything else on that page. Now do you see why we might need the ability to choose a template on a page-by-page basis. At least this was my though process.</p>
 <h2 id="diving-in">Diving In</h2>
 <p>Well in the end, I ended up figuring out what I think is a decent solution. I don’t think I ‘invented’ this solution, because I bet there a many other people out there doing the same thing, but let’s take a look.</p>
@@ -135,7 +139,11 @@
       echo &#39;&lt;/select&gt;&#39;;
   }</code></pre>
 <p>Note, we don’t have to register this function with any hooks or filters because it’s called directory from the =add_meta_box= function. Now we should have a fully rendered meta box on our Custom Post Type Pages. It’s not saving any settings yet, but now we can start persisting the selection. (See fig 1.2)</p>
-<p><a href="*fig%201.2*">./img/wp-page-template-meta-box.png</a></p>
+<div style="text-align:center">
+<figure>
+<img src="../img/wp-page-template-meta-box.png" alt="fig 1.2" /><figcaption><em>fig 1.2</em></figcaption>
+</figure>
+</div>
 <h3 id="persisting-the-meta-box-data">Persisting the Meta Box Data</h3>
 <p>Wordpress makes saving the data from the Meta Box really simple. In our case, it’s going to see our select box and look for the =selected= option. Since this isn’t a meta box tutorial, I’ll leave out the details of how the saving works. All we need to know is that the field saved, and what the name of the saved field is. Here’s the code:</p>
 <pre class="php"><code>  function postTemplateMetaBoxSave( $post_id ) {
