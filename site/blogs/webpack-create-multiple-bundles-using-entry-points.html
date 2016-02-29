@@ -49,8 +49,83 @@
           </div>
         </nav>
         <main role="main" class="col-md-10">
-          <h1 id="it.pagetitle"><span class="math inline"><em>i</em><em>t</em>.<em>p</em><em>a</em><em>g</em><em>e</em><em>t</em><em>i</em><em>t</em><em>l</em><em>e</em></span></h1>
-<p>There’s some content here.</p>
+          <h1 id="webpack-creating-multiple-bundles-using-entry-points">Webpack: Creating multiple bundles using entry points</h1>
+<p><a href="http://webpack.github.io/">Webpack</a> is module bundler that generates static assets for almost all of your front-end dependencies, and their dependencies. It’s primary use-case is for creating optimized bundles for you Javascript, but it’s quickly been extended to handle everything from fonts, images, and even a compilation step for CoffeeScript, LESS, and pretty much anything else you can think of.</p>
+<p>A common use case for Webpack is single page applications, but another large one is for <em>multi</em> page applications. Loading a large JavaScript bundle on every page is not ideal, so let’s set up Webpack to create multiple bundles for us.</p>
+<h2 id="a-basic-setup">A basic setup</h2>
+<p>So let’s say the front-end JavaScript/Stylesheets structure of our site looks like this:</p>
+<pre class="text"><code>    └── static
+        ├── dist
+        └── src
+            ├── js
+            │   ├── Account.js
+            │   └── Front.js
+            ├── node_modules
+            ├── package.json
+            ├── stylesheets
+            │   └── main.scss
+            └── webpack.config.js</code></pre>
+<p>Most importantly, We have a main Javascript file for Front and Account.</p>
+<p>The goal is to have Webpack generate a <code>front-bundle.js</code> and <code>account-bundle.js</code> bundle. The advantage here is that new visitors who aren’t logged in don’t need to load a huge JavaScript bundle just for visiting the homepage.</p>
+<h2 id="single-entry-point">Single Entry Point</h2>
+<p>With a goal in mind, we can dig into Webpack and see what it offers. By default, Webpack makes you define an <code>entry-point</code>, basically the root JavaScript file for you app:</p>
+<pre class="js"><code>    module.exports = {
+        entry: {
+            app: &quot;./static/src/app.js&quot;
+        },
+        output: {
+            path: &quot;./static/dist&quot;,
+            filename: &quot;app-bundle.js&quot;
+        }
+    };</code></pre>
+<p>Our site structure doesn’t match up with that. With this, we would have to load all the account panel JavaScript on the homepage too - which is far from ideal.</p>
+<h2 id="multiple-entry-points">Multiple Entry Points</h2>
+<p>Webpack supports <a href="http://webpack.github.io/docs/multiple-entry-points.html">multiple entry points</a> for this reason. Here’s a new configuration more suited to our site structure:</p>
+<pre class="js"><code>     module.exports = {
+         entry: {
+             front: &quot;./static/src/js/Front.js&quot;,
+             account: &quot;./static/src/js/Account.js&quot;
+         },
+         output: {
+             path: &quot;./static/dist&quot;,
+             filename: &quot;[name]-bundle.js&quot;
+         }
+     };</code></pre>
+<p>Much better. What’s happening here is that Webpack is now looking for both <code>Front.js</code> and <code>Account.js</code>, and will create a separate bundle, including the Webpack runtime and dependencies, for each of those. In the output object, we export the bundle to <code>static/dist</code> and use the <code>[name]</code> variable to name each bundle.</p>
+<p>We end up with <code>/static/dist/front-bundle.js</code> and <code>/static/dist/account-bundle.js</code>. Great, so now we can the script tag to each page and we’re done!</p>
+<p><strong>Almost…</strong></p>
+<p>Even though the bundles contain different code, there are a few libraries/modules that we use in both Front and Account. So, what about the use-case where a new user <em>does</em> end up logging in?</p>
+<p>We wouldn’t want to make them re-download the same JavaScript!</p>
+<h2 id="common-chunks">Common Chunks</h2>
+<p>While the solution above is good, it can be better.</p>
+<p>Ideally, we have Front-bundle.js and Account-bundle.js - but we also have a Common-bundle.js that contains the modules we use <em>everywhere</em>. The browser will cache Common-bundle.js, so when a user transitions from the Front to the Account, they’ve already got most of what they need.</p>
+<p>Say hello to the <a href="http://webpack.github.io/docs/list-of-plugins.html#1-commons-chunk-for-entries">CommonChunksPlugin</a>*.</p>
+<h2 id="configuring-commonchunksplugin">Configuring CommonChunksPlugin</h2>
+<p>The common chunks plugin will look for and find all common modules and dependencies between your entry points, and automatically bundle them. All we need to is a little configuration:</p>
+<pre class="js"><code>      let commonsPlugin = new webpack.optimize.CommonsChunkPlugin(
+          &#39;commons&#39;,  // Just name it
+          &#39;common.js&#39; // Name of the output file
+                      // There are more options, but we don&#39;t need them yet.
+      );
+
+      module.exports = {
+          entry: {
+              front: &quot;./static/src/js/Front.js&quot;,
+              account: &quot;./static/src/js/Account.js&quot;
+          },
+          output: {
+              path: &quot;./static/dist&quot;,
+              filename: &quot;[name]-bundle.js&quot;
+          },
+          plugins: [ commonsPlugin ]
+          // more config options
+      };</code></pre>
+<p>We initialize a new instance of the <code>CommonChunksPlugin</code> and pass a couple parameters (annotated). After that, the Webpack will do the rest.</p>
+<p>The <code>commons</code> bundle will also be output to <code>static/dist/</code>, with the name that we gave it (<code>common.js</code>).</p>
+<h2 id="wrapping-up">Wrapping Up</h2>
+<p><em>Now</em> we’re done! Remeber to add the <code>&lt;script&gt;</code> for both the entry bundle and the common bundle to the correct pages, and Webpack will do the rest.</p>
+<p>It’s a powerful tool, and I think does a great job of cleaning up the mess that is front-end dependency management. There’s an endless amount of plugins and extentions already out there, so we’ll see where Webpack ends up in 6 months to a year.</p>
+<p>:: Cody Reichert</p>
         </main>
       </div>
       <footer>
