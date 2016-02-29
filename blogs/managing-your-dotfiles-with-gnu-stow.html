@@ -49,8 +49,61 @@
           </div>
         </nav>
         <main role="main" class="col-md-10">
-          <h1 id="it.pagetitle"><span class="math inline"><em>i</em><em>t</em>.<em>p</em><em>a</em><em>g</em><em>e</em><em>t</em><em>i</em><em>t</em><em>l</em><em>e</em></span></h1>
-<p>There’s some content here.</p>
+          <h1 id="managin-your-dotfiles-with-gnu-stow">Managin Your Dotfiles with GNU Stow</h1>
+<p>I see questions and posts almost every day (Eg, <a href="http://www.reddit.com/r/archlinux/comments/3cad2o/best_way_to_share_config_files/">One</a>, <a href="https://www.reddit.com/r/commandline/comments/3c0bvk/when_you_have_multiple_systems_and_your_own_bin/">Two</a>, <a href="https://www.reddit.com/r/bash/comments/370kh9/extensive_dotfiles_w_focus_on_tmux_vim_ack_git/">Three</a>) on the best way to manage configuration files between machines or workplaces. There’s a lot of (ok) solutions out there. However, they’re all setup-specific bash scripts that aren’t very reproducible.</p>
+<p>I wanted to write this to hopefully prevent people from maintaining their Makefiles, and to keep their dots pristine.</p>
+<h2 id="welcome-gnu-stow">Welcome GNU Stow</h2>
+<p><a href="https://www.gnu.org/software/stow/">GNU Stow</a> is a symlink-farm manager. Wait, I thought we were talking about dotfiles? Well, we are. To quote the original site:</p>
+<blockquote>
+<p>GNU Stow is a symlink farm manager which takes distinct packages of software and/or data located in separate directories on the filesystem, and makes them appear to be installed in the same place</p>
+</blockquote>
+<p>When it comes to configuration files, this means that we can do things like: create a directory anywhere on our system that imitates the structure of our <code>$HOME</code> directory, and then have Stow symlink them from the imitated directory, to the real <code>$HOME</code>.</p>
+<h2 id="directory-structure">Directory Structure</h2>
+<p>There’s a lot of good examples out there, but one of the most common questions I see is still, “Wait, so how does it work?”. Hopefully this will clarify.</p>
+<p>Create a directory anywhere on your system called <code>dotfiles/</code>, and <code>cd</code> into it. Now pretend for a minute that you’re <em>actually</em> in your <code>$HOME</code> directory. Where would you find your <code>.bashrc</code>? Probably some place like this:</p>
+<pre class="screen"><code>     └── ~/
+         └── .bashrc</code></pre>
+<p>With Stow, you imitate that structure:</p>
+<pre class="screen"><code>     └── dotfiles/
+         └── bash/
+              └── .bashrc</code></pre>
+<p>Not all configuration files live in the top-level of your home-directory, so what about a program that keeps in config file in the <code>$XDG_CONFIG_HOME</code>?</p>
+<p>The key to Stow is remembering that, you have a subdirectory (eg, <code>dotfiles/bash</code>) for each program that wish to store configuration files. So in essence, we end up imitating our home directory each time we add something new. Here’s a bigger example with more nesting:</p>
+<pre class="screen"><code>   ── dotfiles/
+      │
+      ├── awesomewm/
+      ├──── .config/
+      ├──────── awesome/
+      ├─────────── rc.lua
+      │
+      ├── bash/
+      ├──── .bashrc
+      │
+      ├── emacs/
+      ├──── .emacs.d/
+      ├──────── init.el
+      │
+      ├── zsh/ # we can name these dirs whatever we want</code></pre>
+<p>There’s a few different things going on up there, but they all follow the same pattern.</p>
+<p>First, note that we can name the first-level directories whatever we want, but it makes sense to call them the name of the program they contain. Second, see how directly under each first-level directory, we start placing files exactly where they should show up in our <code>$HOME</code> directory.</p>
+<p>Repeat those steps for any other configuration files you want to Stow away.</p>
+<h2 id="using-stow">Using Stow</h2>
+<p>Now that the dotfiles folder is set up, we can actually use Stow. Let’s with only using the <code>.bashrc</code> from above.</p>
+<p>Remove, backup, rename, your original .bashrc (the one that’s <em>not in your dotfiles</em>), because we need that name for Stow.</p>
+<p><code>cd</code> into your new dotfiles directory, and run:</p>
+<pre class="sh"><code>  stow bash</code></pre>
+<p>That will create a symlink from your dotfiles repo, to the correct place at home:</p>
+<pre class="sh"><code>  ls -al ~/.bashrc
+  # outputs:
+  # .bashrc -&gt; dotfiles/bash/.bashrc</code></pre>
+<p>The stow command simply takes the name of the directory you wish to symlink. You can do the same for the other configurations in your dotfiles repo, and you successfully have them all managed.</p>
+<h2 id="advanced-usage">Advanced Usage</h2>
+<p>Using Stow in combination with git (or any other VC) is really the best part. It allows you to have your entire configuration on any system in just a matter of seconds.</p>
+<p>And when you leave, if you don’t want to leave your config files there, stow comes with a nice flag to unstow:</p>
+<pre class="sh"><code>  stow -D bash</code></pre>
+<p>For a more complex and complete example, you can chekout <a href="https://github.com/CodyReichert/dotfiles">my dotfiles</a> on Github.</p>
+<p>My hope here is that I’ll now be able to point people to this article to help them understand Stow little better without needing to actually set it up. If you’ve found any other cool uses for this tool, or some other programs manange your dotfiles - leave it in the comments!</p>
+<p>:: Cody Reichert</p>
         </main>
       </div>
       <footer>
