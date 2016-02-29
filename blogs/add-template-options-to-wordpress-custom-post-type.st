@@ -42,7 +42,9 @@ explicity hardcode it to only be allowed on `page` post types. Well, I
 wanted my users to be able to pick a template offered by their active
 theme on a page-by-page basis.
 
-[./img/wp-page-attributes.png](**fig 1.1)
+<div style="text-align:center">
+![*fig 1.1*](../img/wp-page-attributes.png)
+</div>
 
 The most common solution I found was to register a setting for the
 admin where they could pick one template to take effect on all of
@@ -63,13 +65,15 @@ there a many other people out there doing the same thing, but let's
 take a look.
 
 ### TL;DR Solution
+
 We'll leverage the use of Meta Boxes to provide our own dropdown
 menu. Then we'll save that setting in our `post_meta`, retrieve that
 setting when our CPT pages are loaded, and show the correct
 template. Pretty simple!
 
-    
+
 ### Registering the Meta Box
+
 First, we'll start off by creating our meta box for our Custom Post
 Type. If you've never used meta boxes before, I recommend taking a
 look at the
@@ -113,7 +117,7 @@ see what we're setting up.
 * *core*: This field is the 'priority' of the meta box.
 * *add_action*: registers the meta box.
 
-                      
+
 ### Rendering the Meta Box
 Now that we have registered our Meta Box, it's time to give it
 some markup. Basically, we'll just generate one simple dropdown
@@ -171,7 +175,9 @@ function. Now we should have a fully rendered meta box on our Custom
 Post Type Pages. It's not saving any settings yet, but now we can
 start persisting the selection. (See fig 1.2)
 
-[./img/wp-page-template-meta-box.png](*fig 1.2*)
+<div style="text-align:center">
+![*fig 1.2*](../img/wp-page-template-meta-box.png)
+</div>
 
 
 ### Persisting the Meta Box Data
