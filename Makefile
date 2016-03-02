@@ -5,3 +5,4 @@ build:
 
 .PHONY: deploy
 deploy:
+	git subtree push --prefix site/ origin master
