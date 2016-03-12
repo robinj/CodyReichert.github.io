@@ -52,3 +52,8 @@
   title: January 2016 Reading List
   source: blogs/january-2016-reading-list.st
   inmenu: no
+
+- url: blogs/jsx-the-basics.html
+  title: "JSX: The Basics"
+  source: blogs/jsx-the-basics.st
+  inmenu: no
