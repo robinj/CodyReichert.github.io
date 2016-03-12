@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>The One True Blog - JSX: The Basics</title>
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="../css/screen.css">
+    <link rel="stylesheet" type="text/css" media="print"
+          href="../css/print.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"
+            type="text/javascript"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="../js/nav.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" />
+    <link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h2>
+          The One True Blog
+          <small>
+            <br/>
+            Emacs, programming, and Arch Linux
+          </small>
+        </h2>
+      </header>
+      <div class="row">
+        <nav id="navbar" class="navbar nav navbar-default col-md-2">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle"
+                    data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul class="nav tree"><li><a href="../index.html">Home</a></li><li><a href="../archive.html">Archive</a></li><li><a href="../about.html">About</a></li><li><a href="../contact.html">Contact</a></li></ul>
+          </div>
+        </nav>
+        <main role="main" class="col-md-10">
+          <h1 id="jsx-the-basics">JSX: The Basics</h1>
+<p>When most people get started with <a href="https://facebook.github.io/react/">React.js</a>, JSX is the first thing that comes as a surprise. JSX is a templating language inside JavaScript. Remeber all those string template you to write with <em>(insert frontend framework here)</em>?, well JSX to the rescue.</p>
+<p><strong>Table of Contents:</strong></p>
+<ul>
+<li><p><a href="#what-is-jsx">What is JSX</a></p></li>
+<li><p><a href="#comments-in-jsx">Comments in JSX</a></p></li>
+<li><p><a href="#passing-props">Passing Props</a></p></li>
+</ul>
+<h3 id="what-is-jsx">What is JSX</h3>
+<blockquote>
+<p>JSX is a JavaScript syntax extension that looks similar to XML. You can use a simple JSX syntactic transform with React.</p>
+</blockquote>
+<p>Picture this. Instead of writing HTML strings within your code, you can use a preprocessor that allow you to write (basically) pure HTML with some compile-time checking? Brilliant, let’s look at the examples from Facebook’s <a href="https://facebook.github.io/react/docs/displaying-data.html">Displaying Data</a> post:</p>
+<p>Without JSX:</p>
+<pre><code>React.createElement(&#39;a&#39;, {href: &#39;https://facebook.github.io/react/&#39;}, &#39;Hello!&#39;)</code></pre>
+<p>With JSX:</p>
+<pre><code>&lt;a href=&quot;https://facebook.github.io/react/&quot;&gt;Hello!&lt;/a&gt;</code></pre>
+<p>Great! We’ve improved readability by 10,000%.</p>
+<p>Now that we’ve got a solid introduction<sup>;)</sup> to JSX, let’s take a look at some common gotchas.</p>
+<h2 id="comments-in-jsx">Comments in JSX</h2>
+<p>It’s common to want to write comments within your markup. Inside of JSX, there are a couple of ‘rules’ to follow:</p>
+<h3 id="in-between-jsx-elements-wrap-your-comments-in">In between JSX elements, wrap your comments in <code>{}</code></h3>
+<p><em>valid</em>:</p>
+<pre class="javascript"><code>&lt;div&gt;
+    {/** A comment about the component below */}
+    &lt;span&gt;Hello, JSX&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+<p><em>invalid</em>:</p>
+<pre class="javascript"><code>&lt;div&gt;
+    /** A comment about the component below */
+    &lt;span&gt;Hello, JSX&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+<h3 id="inside-of-a-jsx-tag-you-can-use-normal-comments">Inside of a JSX tag you can use normal comments:</h3>
+<p><em>valid</em>:</p>
+<pre class="javascript"><code>&lt;div&gt;
+    &lt;AwesomeComponent
+        /** Some commentsabout the props below */
+        prop1=&quot;jsxRocks&quot;
+        booly={true}
+    /&gt;
+&lt;/div&gt;</code></pre>
+<p><em>invalid</em>:</p>
+<pre class="javascript"><code>&lt;div&gt;
+    &lt;AwesomeComponent
+        {/** Some commentsabout the props below */}
+        prop1=&quot;jsxRocks&quot;
+        booly={true}
+    /&gt;
+&lt;/div&gt;</code></pre>
+<h2 id="passing-props">Passing Props</h2>
+<p>JSX also makes passing <code>props</code> (arguments) to other components with simple HTML-like syntax. If you’re not familiar with nesting components and receiving components, you should check out <a href="https://facebook.github.io/react/docs/jsx-in-depth.html">JSX In Depth</a> first.</p>
+<h3 id="string-props">String Props</h3>
+<p>Normal, string value props are easy to pass to child components:</p>
+<pre class="javascript"><code>&lt;AwesomeComponent
+    name=&quot;jsxRocks&quot;
+/&gt;</code></pre>
+<p>Now inside of <code>AwesomeComponent</code> you have access to <code>this.props.name</code> that references the value <code>jsxRocks</code>.</p>
+<h3 id="functions">Functions</h3>
+<p>Passing functions as callback is also common practice when writing JSX components. A basic example would look like:</p>
+<pre class="javascript"><code>&lt;AwesomeComponent
+    handleNameChange={data =&gt; myAction(data)}
+/&gt;</code></pre>
+<p>Whoah, let’s not a couple of things here:</p>
+<ul>
+<li><code>{}</code>. Where did that come from? JSX can take JavaScript expressions as arguments to props. This means that you’re not restricted to string props. You can pas functions to children that make handling callback easier.</li>
+</ul>
+<p>To extend the example, this means we can use any logic we want inside of component’s attributes. Need computed data at render time? Not problem</p>
+<pre class="javascript"><code>&lt;AwesomeComponent
+    conditionalProp={thing === true ? &#39;thisprop&#39; : &#39;thatprop&#39;}
+/&gt;</code></pre>
+<ul>
+<li>No quotes? When using expressions as a value to a prop, you don’t need to do any fancy string interpolation - React will take care of rendering the result of the expression.</li>
+</ul>
+<h3 id="basic-function-optimizations">Basic function optimizations</h3>
+<p>Keep in mind that when creating functions inside of components <code>render</code> method (like we’re doing with the expressions in props), that a new function is created on each re-render.</p>
+<p>This is a pretty minor thing for most apps, but as the size of application grows and you start thinking about performance, minimizing the amount of work on the client can be idea.</p>
+<p>If we take our two examples from above, they would be better written so a new function is not created and the class intsance can take care of re-computing the value:</p>
+<pre class="javascript"><code>class AwesomeComponent extends React.Component {
+
+    conditionalProp() {
+        return this.props.thing ? &#39;prop1&#39; : &#39;prop2&#39;
+    }
+
+    render() {
+
+        const { thing } = this.props
+
+        return (
+            &lt;AwesomeComponent
+                conditionalProp={this.conditionalProp()}
+            /&gt;
+        )
+    }
+}</code></pre>
+<h3 id="function-reference-vs-function-unwrapping">Function reference vs Function unwrapping</h3>
+<p>When the <code>render</code> method of a component is called, functions inside of the JSX are executed and their return values are used in place of the props. That brings up two common use-cases for using expression in components:</p>
+<p><strong>Using a reference to a function</strong></p>
+<p>Sometimes you will need to provide a callback method to child component - and sometimes you will need to provide the first argument to a function and let the child provide the rest. In those cases, anonymouse functions work perfectly:</p>
+<pre class="jsx"><code>&lt;AwesomeComponent
+    conditionalProp={data =&gt; myCallback(id, data)}
+/&gt;</code></pre>
+<p>What we’re doing in the above example is called <em>partial function application</em>. In a nutshell, we create a <code>unary</code> function that returns a <code>binary</code> function with the first argument already given (so really, we get a <code>unary</code> function again).</p>
+<p>When the <code>render</code> method of the component is called, functions are executed. With the example above again, what we actually get <em>after</em> the render is:</p>
+<pre class="jsx"><code>&lt;AwesomeComponent
+    handleCallback={data =&gt; myCallback(id, data)}
+/&gt;</code></pre>
+<p>And inside of <code>AwesomeComponent</code>, you can simply call:</p>
+<pre class="jsx"><code>this.props.handleCallback(arg)</code></pre>
+<p><strong>Using the value of a function</strong></p>
+<pre class="javascript"><code>class AwesomeComponent extends React.Component {
+
+    conditionalProp() {
+        return this.props.thing ? &#39;prop1&#39; : &#39;prop2&#39;
+    }
+
+    render() {
+
+        const { thing } = this.props
+
+        return (
+            &lt;AwesomeComponent
+                conditionalProp={this.conditionalProp()}
+            /&gt;
+        )
+    }
+}</code></pre>
+<h2 id="boolean-props">Boolean Props</h2>
+<p>Passing boolean properties to JSX components is simple. The only thing you need to know is that they are <em>JavaScript Booleans</em>, not <em>String Booleans</em>. In other words:</p>
+<p>This is correct:</p>
+<pre class="jsx"><code>&lt;AwesomeComponent
+    handleCallback={true}
+/&gt;</code></pre>
+<p>This is not:</p>
+<pre class="jsx"><code>&lt;AwesomeComponent
+    handleCallback=&quot;true&quot;
+/&gt;</code></pre>
+<p><small> <em>Just a quick note that the second one actually <em>is</em> valid, but it’s not considered a <code>boolean</code> it’s considered a <code>string</code>.</em> </small></p>
+<h3 id="alternative-syntax">Alternative syntax</h3>
+<p>An alternative for passing <code>true</code> is to simply provide the prop name without a value:</p>
+<pre class="jsx"><code>&lt;Input disabled/&gt;</code></pre>
+<p>My professional opinion is to always use the full <code>true</code> or <code>false</code> value for the sake of readability.</p>
+<h2 id="final-thoughts">Final Thoughts</h2>
+<p>Are there any pieces of JSX where you got caught up first starting? Let’s chat - shoot me a message on twitter <span class="citation" data-cites="CodyReichert">[@CodyReichert]</span>(https://twitter.com/CodyReichert) and I’ll add it!</p>
+<p>:: Cody Reichert</p>
+        </main>
+      </div>
+      <footer>
+        powered by <a href="https://github.com/jgm/yst">yst</a>
+      </footer>
+    </div>
+  </body>
+</html>
