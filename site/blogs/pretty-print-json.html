@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>The One True Blog - Pretty Print JSON in JavaScript</title>
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="../css/screen.css">
+    <link rel="stylesheet" type="text/css" media="print"
+          href="../css/print.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"
+            type="text/javascript"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="../js/nav.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" />
+    <link rel="stylesheet" type="text/css" media="print" href="../css/print.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h2>
+          The One True Blog
+          <small>
+            <br/>
+            Emacs, programming, and Arch Linux
+          </small>
+        </h2>
+      </header>
+      <div class="row">
+        <nav id="navbar" class="navbar nav navbar-default col-md-2">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle"
+                    data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul class="nav tree"><li><a href="../index.html">Home</a></li><li><a href="../archive.html">Archive</a></li><li><a href="../about.html">About</a></li><li><a href="../contact.html">Contact</a></li></ul>
+          </div>
+        </nav>
+        <main role="main" class="col-md-10">
+          <h1 id="pretty-printing-json-in-javascript">Pretty Printing JSON in JavaScript</h1>
+<p>I frequently look up how to pretty pring JSON in JavaScript. Whether it be for debugging in the console, to display some output to the user, or any other reason.</p>
+<p><code>JSON.stringify()</code> is usually used to simply convert a JSON object to a string for use elsewhere in the application. It also takes 2 additional parameters: <code>replacer</code> and <code>space</code>.</p>
+<p><strong>Replacer</strong></p>
+<p>The replacer argument tells JSON.stringify to parse your JSON object in a custom way – eg, replace all <code>&quot;true&quot;</code> and <code>&quot;false&quot;</code> strings with the Boolean version <code>true</code> or <code>false</code>. You can do a million other things here, but we’re not too concered about this parameter when all we want to do is pretty print.</p>
+<p><strong>Space</strong></p>
+<p>The <code>space</code> argument, though a little oddly named, tells JSON.stringify() to add spacing to the string output – like a newline, tab, or single space.</p>
+<p>Using this parameter, we can print out our stringified JSON in a readable format:</p>
+<pre class="javascript"><code>JSON.stringify({ a: 1, b:2 }, null, 2)
+
+// &quot;{
+//    &quot;a&quot;: 1,
+//    &quot;b&quot;: 2
+//  }&quot;</code></pre>
+<p>And there we go - a nice, readable JSON object as a string. There’s more information on the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify">MDN</a> page about what you can pass to this function - so check those out and start pretty printing!</p>
+<p>:: Cody Reichert</p>
+        </main>
+      </div>
+      <footer>
+        powered by <a href="https://github.com/jgm/yst">yst</a>
+      </footer>
+    </div>
+  </body>
+</html>
