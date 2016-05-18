@@ -32,3 +32,8 @@
   author: Cody Reichert
   title: "JSX: The Basics"
   file: blogs/jsx-the-basics.html
+
+- date: 2016-05-18
+  author: Cody Reichert
+  title: "Pretty Printing JSON in JavaScript"
+  file: blogs/pretty-print-json.html

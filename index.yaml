@@ -57,3 +57,8 @@
   title: "JSX: The Basics"
   source: blogs/jsx-the-basics.st
   inmenu: no
+
+- url: blogs/pretty-print-json.html
+  title: "Pretty Print JSON in JavaScript"
+  source: blogs/pretty-print-json.st
+  inmenu: no
